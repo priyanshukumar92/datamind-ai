@@ -1,0 +1,6 @@
+gitignore` file mein ye paste karo:
+```
+.env
+__pycache__/
+*.pyc
+.streamlit/secrets.toml

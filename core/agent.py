@@ -1,8 +1,7 @@
 """
-AI Data Analyst Agent - Using Groq (Free & Fast!)
+AI Data Analyst Agent - Core NL → Code Engine
 """
-from dotenv import load_dotenv
-load_dotenv()
+
 import pandas as pd
 import traceback
 import io
@@ -10,9 +9,12 @@ import sys
 import re
 import os
 import base64
+import streamlit as st
 from groq import Groq
 
-client = Groq(api_key=os.environ.get("GROQ_API_KEY", ""))
+# ── API Key (works both locally and on Streamlit Cloud) ──
+api_key = st.secrets.get("GROQ_API_KEY") if hasattr(st, "secrets") else os.environ.get("GROQ_API_KEY", "")
+client = Groq(api_key=api_key)
 
 BLOCKED_KEYWORDS = [
     "os.system", "subprocess", "shutil.rmtree", "__import__",
