@@ -1,12 +1,9 @@
 """
 AI Data Analyst Agent - File Ingestion Layer
-Handles: CSV, Excel, Image (OCR), Audio (Whisper), PDF
 """
 
 import pandas as pd
 from pathlib import Path
-import pytesseract
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 
 def load_csv(file) -> pd.DataFrame:
@@ -36,29 +33,18 @@ def load_audio_as_text(file) -> str:
         import whisper
         import tempfile
         import os
-
-        # Save uploaded file to a temp file
-        suffix = ".mp3"
-        if hasattr(file, 'name'):
-            suffix = os.path.splitext(file.name)[-1]
-
+        suffix = os.path.splitext(file.name)[-1] if hasattr(file, 'name') else ".mp3"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(file.read())
             tmp_path = tmp.name
-
-        # Transcribe with Whisper
         model = whisper.load_model("base")
         result = model.transcribe(tmp_path)
-
-        # Cleanup temp file
         os.unlink(tmp_path)
-
         return result["text"]
-
     except ImportError:
-        return "[Whisper not installed — run: pip install openai-whisper]"
+        return "[whisper not installed]"
     except Exception as e:
-        return f"[Audio transcription error: {e}]"
+        return f"[Audio error: {e}]"
 
 
 def load_pdf_as_text(file) -> str:
