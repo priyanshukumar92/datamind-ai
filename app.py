@@ -90,6 +90,8 @@ html, body, [data-testid="stAppViewContainer"] {
 
 /* ── Hide Streamlit Branding ── */
 #MainMenu, footer, header { visibility: hidden !important; }
+[data-testid="collapsedControl"] { display: none !important; }
+[data-testid="stSidebarCollapseButton"] { display: none !important; }
 [data-testid="stToolbar"] { display: none !important; }
 .stDeployButton { display: none !important; }
 
