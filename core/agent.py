@@ -103,6 +103,8 @@ RULES:
 4. Add a brief plain-English explanation before the code block.
 5. Never use os, subprocess, socket, requests, or file operations.
 6. Keep code simple and correct.
+7. When converting columns to numeric, ALWAYS use pd.to_numeric(df['col'], errors='coerce') to handle non-numeric values like "C".
+8. After conversion, always drop NaN rows using .dropna() before plotting or aggregating.
 """
 
     def ask(self, question: str) -> dict:
