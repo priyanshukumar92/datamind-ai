@@ -30,21 +30,29 @@ def load_image_as_text(file) -> str:
 
 def load_audio_as_text(file) -> str:
     try:
-        import whisper
-        import tempfile
         import os
+        import tempfile
+        from groq import Groq
+        import streamlit as st
+
+        api_key = st.secrets.get("GROQ_API_KEY") if hasattr(st, "secrets") else os.environ.get("GROQ_API_KEY", "")
+        client = Groq(api_key=api_key)
+
         suffix = os.path.splitext(file.name)[-1] if hasattr(file, 'name') else ".mp3"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(file.read())
             tmp_path = tmp.name
-        model = whisper.load_model("base")
-        result = model.transcribe(tmp_path)
+
+        with open(tmp_path, "rb") as audio_file:
+            transcription = client.audio.transcriptions.create(
+                model="whisper-large-v3",
+                file=audio_file,
+            )
         os.unlink(tmp_path)
-        return result["text"]
-    except ImportError:
-        return "[whisper not installed]"
+        return transcription.text
+
     except Exception as e:
-        return f"[Audio error: {e}]"
+        return f"[Audio error: {str(e)}]"
 
 
 def load_pdf_as_text(file) -> str:
